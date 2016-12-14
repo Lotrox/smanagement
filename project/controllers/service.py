@@ -12,5 +12,5 @@ name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 @app.route(name + '/<service>/<command>', method='GET')
 def status(service, command):
-	os.system('sudo service ' + str(service) + ' ' + str(command))
-	raise HTTPResponse(status=200, body='Running')
+	output = str(os.popen('sudo service ' + str(service) + ' ' + str(command)).read()).replace('\n', '<br />')
+	raise HTTPResponse(status=200, body=output)
