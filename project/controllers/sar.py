@@ -6,17 +6,20 @@
 from project import app
 from bottle import request, HTTPResponse
 import os
+import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 
 @app.route(name + '/cpu', method='GET')
-def status():
+@auth_basic(auth.check_pass)
+def cpu():
 	out = str(os.popen('sar -u').read()).replace('\n', '<br />')
 	raise HTTPResponse(status=200, body=out)
 
 
 @app.route(name + '/mem', method='GET')
-def status():
+@auth_basic(auth.check_pass)
+def mem():
         out = str(os.popen('sar -r').read()).replace('\n', '<br />')
         raise HTTPResponse(status=200, body=out)

@@ -6,11 +6,13 @@
 from project import app
 from bottle import request, HTTPResponse
 import os
+import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 
 @app.route(name + '/<service>/<command>', method='GET')
-def status(service, command):
+@auth_basic(auth.check_pass)
+def service(service, command):
 	output = str(os.popen('sudo service ' + str(service) + ' ' + str(command)).read()).replace('\n', '<br />')
 	raise HTTPResponse(status=200, body=output)
