@@ -5,7 +5,7 @@
 
 from project import app
 from bottle import request, HTTPResponse, auth_basic
-import os
+import os, json
 import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
@@ -21,5 +21,5 @@ def clients():
         """
         cmd = "echo \"$(journalctl -eu dnsmasq | grep \"$(sudo hostapd_cli all_sta | grep dot11RSNAStatsSTAAddress | cut -d \"=\" -f2 | cut -d \" \" -f1)\" | grep DHCPACK | cut -c61-)\" > /tmp/ap-clients"
         os.system(cmd)
-        output = str(os.popen("awk '!a[$0]++' /tmp/ap-clients").read())
-        raise HTTPResponse(status=200, body=output.replace('\n', '<br />'))
+        output = str(os.popen("awk '!a[$0]++' /tmp/ap-clients").read()).strip().split('\n')
+        raise HTTPResponse(status=200, body=json.dumps(output))
