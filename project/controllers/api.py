@@ -4,29 +4,31 @@
 # Description: API Controller. Method referring api-self.
 
 from project import app
-from bottle import request, HTTPResponse, auth_basic
+from bottle import request, HTTPResponse, HTTPError, auth_basic, response
 import os, json
 import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
-@app.route(name + '/status', method='GET')
-@auth_basic(auth.check_pass)
-def status():
-	raise HTTPResponse(status=200, body='Running')
-
-@app.route(name + '/login', method='POST')
-@auth_basic(auth.check_pass)
-def login():
-	csrf = str(request.environ.get('beaker.session').get('csrf_token'))
-	raise HTTPResponse(status=200, body = csrf)
-
 
 @app.route(name + '/status', method='POST')
-@auth_basic(auth.check_pass)
-def statusPost():
-        #os.system('$(sleep 1; sudo service NOMBRE-PROVISIONAL restart &)')
-        raise HTTPResponse(status=202, body="Running POST")
+def status():
+	auth.check_apikey()
+	user = os.popen('echo "$USER"').read().rstrip()
+	return user
+
+
+@app.route(name + '/login', method='POST')
+def login():
+	csrf = str(request.environ.get('beaker.session').get('csrf_token'))
+	data = request.body.read()
+        result = json.loads(data)
+	print result['key']
+	if str(result['key']) == "admin":
+		return csrf
+	else:
+		return HTTPError(401, "Unauthorized")
+
 
 
 @app.route(name + '/restart', method='PUT')

@@ -4,7 +4,7 @@
 # Description: API REST Framework Bottle.
 
 from project import app
-from bottle import run, request, debug, ServerAdapter, Bottle, abort
+from bottle import run, request, debug, ServerAdapter, Bottle, abort, hook, response
 from gevent import monkey; monkey.patch_all()
 import signal, sys, os
 import logging
@@ -28,7 +28,7 @@ def str_random(length):
 
 def gen_token():
     '''Put a generated token in session if none exist and return it.'''
-    sess = request.environ['beaker.session']
+    sess = request.environ
     if 'csrf_token' not in sess:
         sess['csrf_token'] = str_random(32)
     return sess['csrf_token']
@@ -46,10 +46,19 @@ def require_csrf(callback):
 	elif "/api/login" in str(request['bottle.route']):
 	        session['csrf_token'] = gen_token()
 		logging.critical("CSRF: " + str(session['csrf_token']))
+		os.system('echo "' + request.environ.get('REMOTE_ADDR') + ' ' + str(session['csrf_token']) + '" > /tmp/csrf')
        	body = callback(*args, **kwargs)
        	return body
 
     return wrapper
+
+
+# Disparador encargado de habilitar el acceso a origenes distintos en todas las llamadas.
+@app.hook('after_request')
+def enable_cors():
+        response.headers['Access-Control-Allow-Origin']  =  '*'
+        response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, Set-cookie, Content-Length'
 
 
 if __name__ == '__main__':

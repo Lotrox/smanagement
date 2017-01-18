@@ -10,3 +10,9 @@ import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
+@app.route(name + '/login', method='POST')
+#@auth_basic(auth.check_pass)
+def login():
+        csrf = str(request.environ.get('beaker.session').get('csrf_token'))
+        return csrf
+
