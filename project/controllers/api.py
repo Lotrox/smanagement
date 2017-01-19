@@ -13,8 +13,9 @@ name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 @app.route(name + '/status', method='POST')
 def status():
-	auth.check_apikey()
-	user = os.popen('echo "$USER"').read().rstrip()
+	#auth.check_apikey()
+	user = os.popen('hostname').read().rstrip() #Sustituir por hostnamectl y parsear json.
+	print user
 	return user
 
 
