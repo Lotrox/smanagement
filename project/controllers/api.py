@@ -11,9 +11,14 @@ import auth
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 
+@app.route(name, method='GET')
+def check():
+        return "<a href=\"javascript:close_window();\">Running! Click here to go back</a>"
+
+
 @app.route(name + '/status', method='POST')
 def status():
-	#auth.check_apikey()
+	auth.check_apikey()
 	user = os.popen('hostname').read().rstrip() #Sustituir por hostnamectl y parsear json.
 	print user
 	return user

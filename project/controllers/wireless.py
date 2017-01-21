@@ -11,7 +11,7 @@ import auth
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 
-@app.route(name + '/clients', method='GET')
+@app.route(name + '/clients', method='POST')
 def clients():
 	"""
         Obtener la lista de dispositivos conectados al punto de acceso WiFi.

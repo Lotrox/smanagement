@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Daniel Martinez Caballero
-# Description: Services Controller. 
+# Description: SAR Controller.
 
 from project import app
 from bottle import request, HTTPResponse, auth_basic
