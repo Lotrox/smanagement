@@ -4,7 +4,7 @@
 # Description: Wireless Controller.
 
 from project import app
-from bottle import request, auth_basic, hook, response, HTTPResponse
+from bottle import request, hook, response, HTTPResponse
 import os, json
 import auth
 
