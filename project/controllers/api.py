@@ -16,13 +16,6 @@ def check():
         return "<a href=\"javascript:window.history.go(-1);\">Running! Click here to go back</a>"
 
 
-@app.route(name + '/status', method='POST')
-def status():
-	auth.check_apikey()
-	user = os.popen('hostname').read().rstrip() #Sustituir por hostnamectl y parsear json.
-	print user
-	return user
-
 
 @app.route(name + '/login', method='POST')
 def login():
@@ -50,3 +43,5 @@ def update():
 	raise HTTPResponse(status=202)
 	#git pull REPOSITORIO
 	#restart()
+
+

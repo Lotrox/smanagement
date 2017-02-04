@@ -24,5 +24,4 @@ def clients():
         os.system(cmd)
         output = str(os.popen("awk '!a[$0]++' /tmp/ap-clients").read()).strip().split('\n')
 	return json.dumps(output)
-	raise HTTPResponse(status=200, body=json.dumps(output))
 
