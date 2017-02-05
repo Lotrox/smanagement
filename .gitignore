@@ -2,4 +2,4 @@
 *.swp
 # Cookies
 data/
-temp/
+temp/*
