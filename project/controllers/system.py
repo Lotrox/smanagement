@@ -46,4 +46,6 @@ def status():
 	out["mhzCPU"] = os.popen('lscpu | grep \"CPU MHz\"').read().split()[-1]
 	out["uptime"] = os.popen("awk '{print int($1/3600)\"h \"int(($1%3600)/60)\"m \"int($1%60)\"s\"}' /proc/uptime").read().rstrip()
 	out["cuCPU"]  = round(float(os.popen('grep \'cpu \' /proc/stat | awk \'{usage=($2+$4)*100/($2+$4+$5)} END {print usage}\'').read().rstrip())*100)/100
+	mem = os.popen('free -m | grep Mem').read().split()
+	out["cuMEM"]  = round(float(mem[2])/float(mem[1])*10000)/100
 	return json.dumps(out, ensure_ascii=False)

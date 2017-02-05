@@ -45,8 +45,6 @@ def require_csrf(callback):
         		abort(400)
 	elif "/api/login" in str(request['bottle.route']):
 	        session['csrf_token'] = gen_token()
-		logging.critical("CSRF: " + str(session['csrf_token']))
-		os.system('echo "' + request.environ.get('REMOTE_ADDR') + ' ' + str(session['csrf_token']) + '" > /tmp/csrf')
        	body = callback(*args, **kwargs)
        	return body
 
