@@ -21,9 +21,11 @@ def login():
 	csrf = str(request.environ.get('beaker.session').get('csrf_token'))
 	data = request.body.read()
         result = json.loads(data)
-	print result['key']
 
-	if str(result['key']) == "admin":
+	password = os.popen('cat /opt/smanagement/api-rest/sm.conf').read().rstrip().split('\n')[0]
+	key      = os.popen('echo "' + result['key'] + '" | md5sum').read().rstrip()
+
+	if key == password:
 	        os.system('echo $(date +%Y-%m-%d@%H:%m:%S) "' + request.environ.get('REMOTE_ADDR') + '" OK  >> ' + temp + '/access.log')
 		os.system('echo "' + request.environ.get('REMOTE_ADDR') + ' ' + str(csrf) + '" > ' + temp + '/adm.data')
 		return csrf

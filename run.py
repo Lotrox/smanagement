@@ -83,7 +83,8 @@ if __name__ == '__main__':
 	app.install(require_csrf)
 	app = SessionMiddleware(app, session_opts)
 
-	port = int(os.environ.get("PORT", 8091))
-	run(app, host='0.0.0.0', port=port, server=SecureGeventServer)
+	port = os.popen('cat /opt/smanagement/api-rest/sm.conf').read().rstrip().split('\n')[1]
+	portEnv = int(os.environ.get("PORT", port))
+	run(app, host='0.0.0.0', port=portEnv, server=SecureGeventServer)
 
 
