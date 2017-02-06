@@ -50,3 +50,12 @@ def mem():
                                 newout[c] = d
                                 c += 1
         return json.dumps(newout, ensure_ascii=False)
+
+@app.route(name + '/net/avg', method='POST')
+def netAVG():
+        auth.check_apikey()
+	out = str(os.popen('sar -n DEV 1 1 | grep Average | tail -1').read()).rstrip().split()
+	newout = {}
+	newout["rx"] = out[4].replace(',', '.')
+	newout["tx"] = out[5].replace(',', '.')
+        return json.dumps(newout, ensure_ascii=False)
