@@ -49,3 +49,12 @@ def status():
 	mem = os.popen('free -m | grep Mem').read().split()
 	out["cuMEM"]  = round(float(mem[2])/float(mem[1])*10000)/100
 	return json.dumps(out, ensure_ascii=False)
+
+
+@app.route(name + '/firewall', method='POST')
+def firewall():
+        auth.check_apikey()
+
+        return os.popen('sudo iptables -L').read().replace('\n', '<br>')
+
+
