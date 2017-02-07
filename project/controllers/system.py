@@ -13,6 +13,8 @@ name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 
 @app.route(name + '/ssh', method='POST')
 def ssh():
+	# Esta petición permite pasar como argumento POST una cadena el cual será interpretado por BASH
+	# y salida del comando es devuelto en la propia petición.
 	auth.check_apikey()
 
 	data = request.body.read()
@@ -23,6 +25,7 @@ def ssh():
 
 @app.route(name + '/temperature', method='POST')
 def temperature():
+	# Usando el paquete lm-sensors, esta llamada devuelve una media de dos sensores del equipo.
         auth.check_apikey()
 
 	out = os.popen('sensors | grep \"temp1\" | cut -d \"+\" -f2').read()
@@ -33,6 +36,7 @@ def temperature():
 
 @app.route(name + '/status', method='POST')
 def status():
+	# Llamada encargada de devolver un resumen de información del propio equipo.
         auth.check_apikey()
 
 	out = {}
@@ -53,6 +57,7 @@ def status():
 
 @app.route(name + '/firewall', method='POST')
 def firewall():
+	# Usando la utilidad de iptables del equipo, devuelve la lista de reglas actualmente aplicadas en el sistema.
         auth.check_apikey()
 
         return os.popen('sudo iptables -L').read().replace('\n', '<br>')
