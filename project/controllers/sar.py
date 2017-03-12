@@ -20,6 +20,7 @@ def cpu():
 	newout = {}
 	for i in range(len(out)-2):
 		d = {}
+		out[i] = os.popen('echo "' + out[i]  + '" | xargs').read()
 		if len(out[i].split()) == 8:
 			d["time"] = out[i].split()[0]
 			d["user"] = out[i].split()[2].replace(',','.')
@@ -42,6 +43,7 @@ def mem():
         newout = {}
         for i in range(len(out)-2):
                 d = {}
+		out[i] = os.popen('echo "' + out[i]  + '" | xargs').read()
                 if len(out[i].split()) == 11:
                         d["time"] = out[i].split()[0]
                         d["free"] = out[i].split()[1]
@@ -50,6 +52,32 @@ def mem():
                                 newout[c] = d
                                 c += 1
         return json.dumps(newout, ensure_ascii=False)
+
+
+@app.route(name + '/disk', method='POST')
+def disk():
+        auth.check_apikey()
+	out = str(os.popen('sar -d').read()).split('\n')
+	c = 0
+	newout = {}
+	time = ""
+	for i in range(len(out)-2):
+	        d = {}
+	        out[i] = os.popen('echo "' + out[i]  + '" | xargs').read()
+	        if len(out[i].split()) == 10:
+        	        d["time"] = out[i].split()[0]
+                	d["tps"] = out[i].split()[2].replace(',','.')
+	                d["rd_sec"] = out[i].split()[3].replace(',','.')
+        	        if (d["tps"] != "tps") and (d["time"] != "Average:"):
+                	        if time == d["time"]:
+                        	        c -= 1
+                                	d["tps"] = float(d["tps"]) + float(newout[c]["tps"])
+	                                d["rd_sec"] = float(d["rd_sec"]) + float(newout[c]["rd_sec"])
+        	                time = d["time"]
+                	        newout[c] = d
+	                        c += 1
+	print json.dumps(newout, ensure_ascii=False)
+
 
 @app.route(name + '/net/avg', method='POST')
 def netAVG():
