@@ -55,6 +55,22 @@ def status():
 	return json.dumps(out, ensure_ascii=False)
 
 
+@app.route(name + '/disk', method='POST')
+def diskSize():
+	# Información acerca de la ocupación del disco principal del sistema operativo.
+        auth.check_apikey()
+
+	out = {}
+	df = os.popen('df -k "/" | tail -n1 | xargs').read().split()
+	out['folder'] = df[0] # Directorio principal usado por el sistema.
+	out['blocks'] = df[1] # Número total de bloques de tamaño 1KB.
+	out['used']   = df[2] # Bloques usados.
+	out['avail']  = df[3] # Bloques disponibles.
+	out['use']    = df[4] # % Usado.
+	out['mount']  = df[5] # Directorio de montaje.
+	return json.dumps(out, ensure_ascii=False)
+
+
 @app.route(name + '/firewall', method='POST')
 def firewall():
 	# Usando la utilidad de iptables del equipo, devuelve la lista de reglas actualmente aplicadas en el sistema.
