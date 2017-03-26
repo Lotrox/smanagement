@@ -29,7 +29,7 @@ def login():
         result = json.loads(data)
 
 	password = os.popen('cat /opt/smanagement/api-rest/sm.conf').read().rstrip().split('\n')[0]
-	key      = os.popen('echo "' + result['key'] + '" | md5sum').read().rstrip()
+	key      = os.popen('echo "' + result['key'] + '" | sha256sum').read().rstrip()
 
 	if key == password:
 	        os.system('echo $(date +%Y-%m-%d@%H:%m:%S) "' + request.environ.get('REMOTE_ADDR') + '" OK  >> ' + temp + '/access.log')
