@@ -19,6 +19,18 @@ def service(service, command):
 	return output
 
 
+@app.route(name + '/<service>', method='POST')
+def service(service):
+	out = os.popen('sudo service ' + service + ' status').read()
+	d = {}
+
+	d['name']   = out.split('Loaded: ')[0].rstrip() # Nombre y descripcion del servicio.
+	d['loaded'] = out.split('Loaded: ')[1].split('Active: ')[0].rstrip() # Carga del servicio.
+	d['status'] = out.split('Loaded: ')[1].split('Active: ')[1].split('\n')[0] # Estado actual del servicio.
+
+	return json.dumps(d, ensure_ascii=False)
+
+
 @app.route(name + '/list', method='POST')
 def list():
         auth.check_apikey()
@@ -36,3 +48,4 @@ def list():
                	newout[c] = d
                 c += 1
         return json.dumps(newout, ensure_ascii=False)
+
