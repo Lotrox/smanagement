@@ -1,6 +1,6 @@
 *.pyc
 *.swp
-# Cookies
 data/
 temp
 *.pem
+*.conf
