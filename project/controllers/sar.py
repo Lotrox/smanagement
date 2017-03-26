@@ -86,7 +86,7 @@ def disk():
 @app.route(name + '/net/avg', method='POST')
 def netAVG():
         auth.check_apikey()
-	out = str(os.popen('sar -n DEV 1 1 | grep Average | tail -1').read()).rstrip().split()
+	out = str(os.popen('sar -n DEV 1 1 | grep "$(nmcli dev status | grep ethernet | cut -d' ' -f1)" | tail -n1').read()).rstrip().split()
 	newout = {}
 	newout["rx"] = out[4].replace(',', '.')
 	newout["tx"] = out[5].replace(',', '.')
