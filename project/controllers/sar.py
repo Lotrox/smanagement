@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Author: Daniel Martinez Caballero
+# Author: Daniel Martínez Caballero
+# Email: dmc00024@red.ujaen.es
 # Description: SAR Controller. Sysstat performance monitoring.
+# Depends: sysstat
 
 from project import app
 from bottle import request, HTTPResponse
@@ -10,6 +12,37 @@ import os
 import auth
 
 name = '/' + os.path.splitext(os.path.basename(__file__))[0]
+
+
+@app.route(name + '/disk', method='POST')
+def disk():
+# Devuelve histórico de información del disco de las últimas 24 horas.
+
+        auth.check_apikey() 
+	out = str(os.popen('sar -d').read()).split('\n')
+	c = 0
+	newout = {}
+	time = ""
+	for i in range(len(out)-2):
+	        d = {}
+	        out[i] = ' '.join(out[i].split())
+	        if len(out[i].split()) == 10:
+        	        d["time"] = out[i].split()[0]
+                	d["tps"] = out[i].split()[2].replace(',','.') # Transferencias por segundo.
+                	d["read"] = out[i].split()[3].replace(',','.') # Lecturas de 512 bytes.
+                	d["write"] = out[i].split()[4].replace(',','.') # Escrituras de 512 bytes.
+	                d["used"] = out[i].split()[9].replace(',','.') # Porcentaje de discos usado.
+        	        if (d["tps"] != "tps") and (d["time"] != "Average:"):
+                	        if time == d["time"]:
+                        	        c -= 1
+                                	d["tps"]   = float(d["tps"]) + float(newout[c]["tps"])
+                                	d["read"]  = float(d["read"]) + float(newout[c]["read"])
+                                	d["write"] = float(d["write"]) + float(newout[c]["write"])
+	                                d["used"]  = float(d["used"]) + float(newout[c]["used"])
+        	                time = d["time"]
+                	        newout[c] = d
+	                        c += 1
+	return json.dumps(newout, ensure_ascii=False)
 
 
 @app.route(name + '/cpu', method='POST')
@@ -53,34 +86,6 @@ def mem():
                                 c += 1
         return json.dumps(newout, ensure_ascii=False)
 
-
-@app.route(name + '/disk', method='POST')
-def disk():
-        auth.check_apikey()
-	out = str(os.popen('sar -d').read()).split('\n')
-	c = 0
-	newout = {}
-	time = ""
-	for i in range(len(out)-2):
-	        d = {}
-	        out[i] = ' '.join(out[i].split())
-	        if len(out[i].split()) == 10:
-        	        d["time"] = out[i].split()[0]
-                	d["tps"] = out[i].split()[2].replace(',','.') # Transferencias por segundo.
-                	d["read"] = out[i].split()[3].replace(',','.') # Lecturas de 512 bytes.
-                	d["write"] = out[i].split()[4].replace(',','.') # Escrituras de 512 bytes.
-	                d["used"] = out[i].split()[9].replace(',','.') # Porcentaje de discos usado.
-        	        if (d["tps"] != "tps") and (d["time"] != "Average:"):
-                	        if time == d["time"]:
-                        	        c -= 1
-                                	d["tps"]   = float(d["tps"]) + float(newout[c]["tps"])
-                                	d["read"]  = float(d["read"]) + float(newout[c]["read"])
-                                	d["write"] = float(d["write"]) + float(newout[c]["write"])
-	                                d["used"]  = float(d["used"]) + float(newout[c]["used"])
-        	                time = d["time"]
-                	        newout[c] = d
-	                        c += 1
-	return json.dumps(newout, ensure_ascii=False)
 
 
 @app.route(name + '/net/avg', method='POST')

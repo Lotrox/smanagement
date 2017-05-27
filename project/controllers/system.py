@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Daniel Martinez Caballero
-# Description: Wireless Controller.
+# Description: Controlador del sistema. Utilidades del sistema.
 
 from project import app
 from bottle import request, hook, response, HTTPResponse
@@ -14,7 +14,7 @@ name = '/' + os.path.splitext(os.path.basename(__file__))[0]
 @app.route(name + '/ssh', method='POST')
 def ssh():
 	# Esta petición permite pasar como argumento POST una cadena el cual será interpretado por BASH
-	# y salida del comando es devuelto en la propia petición.
+	# y la salida del comando es devuelto en el propio cuerpo de la respuesta.
 	auth.check_apikey()
 
 	data = request.body.read()

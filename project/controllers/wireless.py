@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Daniel Martinez Caballero
-# Description: Wireless Controller.
+# Description: Controlador para monitorización y gestión de WiFi en modo AP.
+# Depends: Servicios hostapd y dnsmasq.
 
 from project import app
 from bottle import request, auth_basic, hook, response, HTTPResponse

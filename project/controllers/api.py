@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Daniel Martinez Caballero
-# Description: API Controller. Method referring api-self.
+# Description: API Controller. Métodos referidos a sí misma.
 
 from project import app
 from bottle import request, HTTPResponse, HTTPError, auth_basic, response
