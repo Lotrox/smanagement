@@ -52,6 +52,13 @@ def status():
 	out["cuCPU"]  = round(float(os.popen('grep \'cpu \' /proc/stat | awk \'{usage=($2+$4)*100/($2+$4+$5)} END {print usage}\'').read().rstrip())*100)/100
 	mem = os.popen('free -m | grep Mem').read().split()
 	out["cuMEM"]  = round(float(mem[2])/float(mem[1])*10000)/100
+	load = os.popen('cat /proc/loadavg').read()
+        newout = {}
+        newout[0] = load.split()[0]
+        newout[1] = load.split()[1]
+        newout[2] = load.split()[2]
+	out["loadAVG"] = newout
+
 	return json.dumps(out, ensure_ascii=False)
 
 
@@ -79,3 +86,12 @@ def firewall():
         return os.popen('sudo iptables -L').read().replace('\n', '<br>')
 
 
+
+@app.route(name + '/loadAVG', method='POST')
+def loadAVG():
+	load = os.popen('cat /proc/loadavg').read()
+	out = {}
+	out['1'] = load.split()[0]
+	out['5'] = load.split()[1]
+	out['15'] = load.split()[2]
+	return json.dumps(out, ensure_ascii=False)
