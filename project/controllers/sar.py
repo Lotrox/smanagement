@@ -91,7 +91,7 @@ def mem():
 @app.route(name + '/net/avg', method='POST')
 def netAVG():
         auth.check_apikey()
-	out = str(os.popen('sar -n DEV 1 1 | grep "$(nmcli dev status | grep ethernet | cut -d' ' -f1)" | tail -n1').read()).rstrip().split()
+	out = str(os.popen('sar -n DEV 1 1 | grep "$(ip -o link show | awk \'{print $2,$9}\' | grep "UP" | head -n1 | cut -d ":" -f1)" | tail -n1').read()).rstrip().split()
 	newout = {}
 	newout["rx"] = out[4].replace(',', '.')
 	newout["tx"] = out[5].replace(',', '.')
