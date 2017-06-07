@@ -87,11 +87,3 @@ def firewall():
 
 
 
-@app.route(name + '/loadAVG', method='POST')
-def loadAVG():
-	load = os.popen('cat /proc/loadavg').read()
-	out = {}
-	out['1'] = load.split()[0]
-	out['5'] = load.split()[1]
-	out['15'] = load.split()[2]
-	return json.dumps(out, ensure_ascii=False)
