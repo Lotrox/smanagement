@@ -21,7 +21,7 @@ def clients():
         """
 	auth.check_apikey()
 
-        cmd = "echo \"$(journalctl -eu dnsmasq | grep \"$(sudo hostapd_cli all_sta | grep dot11RSNAStatsSTAAddress | cut -d \"=\" -f2 | cut -d \" \" -f1)\" | grep DHCPACK | cut -c61-)\" > /tmp/ap-clients"
+        cmd = "echo \"$(journalctl -eu dnsmasq | grep \"$(sudo hostapd_cli all_sta | grep dot11RSNAStatsSTAAddress | cut -d \"=\" -f2 | cut -d \" \" -f1)\" | grep DHCPACK | cut -c62-)\" > /tmp/ap-clients"
         os.system(cmd)
         output = str(os.popen("awk '!a[$0]++' /tmp/ap-clients").read()).strip().split('\n')
 	return json.dumps(output)
